@@ -1,8 +1,7 @@
-apiKey = '313359100b5007a4fe2a704d5c954fac';
+const apiKey = '313359100b5007a4fe2a704d5c954fac';
 const baseURL = 'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid='+ apiKey;
 const currURL = 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=' + apiKey;
 const weatherDataElem = document.getElementById('weatherData');
-unsplashApiKey = `1O7m0hebpdZQkBP-7wV2noJD_iS_lWMJrPw2x8yH0GM`
 //load dom first
 document.addEventListener("DOMContentLoaded", function() {   
     const date = dayjs().format("dddd, MMMM D, YYYY")
@@ -39,12 +38,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const savedEntry = newSavedCityDate[loadWeatherIndex];
         console.log(savedEntry)
         if (!savedEntry.weatherData) {
-          console.log("no data")
             getWeatherData(city)
             console.log("loaded get Weather")
         } else {
         weatherDataElem.innerHTML = savedEntry.weatherData
-          console.log(savedEntry)
+          seeWeather()
         console.log(savedEntry.weatherData)
         savedCityDate.push({city, date, weatherData: savedEntry.weatherData});
         localStorage.setItem('savedCityDate', JSON.stringify(savedCityDate));
@@ -78,18 +76,23 @@ function saveSearch() {
     if (duplicateEntryIndex < 0) {
             getWeatherData(city) 
     } else if (duplicateEntryIndex >= 0) {
-        const savedEntry = savedCityDate[duplicateEntryIndex];
+      const savedEntry = savedCityDate[duplicateEntryIndex];
         weatherDataElem.innerHTML = savedEntry.weatherData
         savedCityDate.push({city: city.toUpperCase(), date, weatherData: savedEntry.weatherData});
         console.log("duplicateentry")
+      
         localStorage.setItem('savedCityDate', JSON.stringify(savedCityDate));
         saveTopCities();
+      
     }
 };
 
+function seeWeather() {
+  const mainContentElem = document.getElementById('mainContent');
+  mainContentElem.scrollIntoView({ behavior: 'smooth' })
+}
 
 function getWeatherData(city) {
-    
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${city}`;
     fetch(url)
     .then(response => response.json())
@@ -116,7 +119,8 @@ function getWeatherData(city) {
         //call function to render cardInfo and current weather to HTML
         const weatherData = renderWeatherData(cardInfo, currentWeather);
         weatherDataElem.innerHTML = weatherData
-        setCityImage(city)
+      seeWeather()
+        
         //save search data to storage for search buttons and loading duplicate searches from local storage
         const saveddate = dayjs().format("dddd, MMMM D, YYYY")
         const savedCityDate = JSON.parse(localStorage.getItem('savedCityDate') || "[]")
@@ -159,35 +163,33 @@ function renderWeatherData(cardInfo, currentWeather) {
 
     // Generate HTML for each filtered day
     const forecastHTML = cardInfo.map(item => `
-        <div class="forecast-item">
-            <div>${new Date(item.date).toLocaleString('en-US', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
-            <div>${item.temperature} &deg;F</div>
-            <div>${item.description}</div>
-            <img src="http://openweathermap.org/img/wn/${item.icon}.png">
-            <div>Humidity: ${item.humidity}</div>
-            <div>Wind: ${item.wind}</div>
-        </div>
-    `).join('');
+    <div class="forecast-item">
+    <div>${new Date(item.date).toLocaleString('en-US', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit' })}</div>
+    <div>${item.temperature}&deg;F</div>
+    <div>${item.description}</div>
+    <img src="http://openweathermap.org/img/wn/${item.icon}.png">
+    <div>Humidity: ${item.humidity}</div>
+    <div>Wind: ${item.wind}</div>
+</div>
+`).join('');
 
-    const currentdate = dayjs().format("dddd, MMMM D, YYYY")
-    const currentWeatherHTML = `
-        <div class="current-weather row" style="display: flex;">
-           <div class="col-md-3">
+const currentdate = dayjs().format("dddd, MMMM D, YYYY")
+const currentWeatherHTML = `
+    <div class="current-weather row" style="display: flex;">
+        <div class="col-md-5">
             <h2>${currentWeather.city}</h2>
-            <div id="currentdate">${currentdate}</div>  
-           </div>
-            <div class="col-md-7 currentWeatherTemp">
-                <div>${currentWeather.temperature} &deg;F</div>
-             </div> 
-            <div class="col-md-3">
-            
+            <div id="currentdate">${currentdate}</div> 
             <div>${currentWeather.description}</div>
             <img src="http://openweathermap.org/img/wn/${currentWeather.icon}.png">
             <div>Humidity: ${currentWeather.humidity}</div>
             <div>Wind: ${currentWeather.wind}</div>
-            </div>
         </div>
-    `;
+        <div class="col-md-6 currentWeatherTemp">
+            <div>${currentWeather.temperature}&deg;F</div>
+        </div> 
+        
+    </div>
+`;
 
     return `
         ${currentWeatherHTML}
@@ -213,73 +215,4 @@ const topCities = Object.keys(cityCounts)
 
 console.log(topCities)
 localStorage.setItem('savedTopCities', JSON.stringify(topCities));
-}
-
-// function setCityImage(city) {
-//     const unsplashURL = `https://api.unsplash.com/search/photos?query=${city}&client_id=` + unsplashApiKey;
-
-//     fetch(unsplashURL)
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.results.length > 0) {
-//                 const imageURL = data.results[0].urls.regular;
-//               console.log(imageURL)
-//                 weatherDataElem.style.backgroundImage = `url(${imageURL})`;
-//             } else {
-//                 weatherDataElem.style.backgroundImage = ''; // Fallback to default background
-//             }
-//         })
-//         .catch(() => {
-//             weatherDataElem.style.backgroundImage = ''; // Fallback to default background
-//         });
-// }
-  
-//   async function setCityImage(city) {
-//     const unsplashURL = `https://api.unsplash.com/search/photos?query=${city}&client_id=` + unsplashApiKey;
-
-//     try {
-//         const response = await fetch(unsplashURL);
-//         const data = await response.json();
-//         if (data.results.length > 0) {
-//             return data.results[0].urls.regular;
-//         }
-//     } catch (error) {
-//         console.error('Error fetching city image:', error);
-//     }
-//     return ''; // Fallback to default background
-// }
-
-// function setCityImage(city) {
-//   const unsplashURL = `https://api.unsplash.com/search/photos?query=${city}&client_id=` + unsplashApiKey;
-
-//   return fetch(unsplashURL)
-//     .then(response => response.json())
-//     .then(data => {
-//       if (data.results.length > 0) {
-//         return data.results[0].urls.regular;
-//       } else {
-//         return ''; // Fallback to default background
-//       }
-//     })
-//     .catch(() => {
-//       return ''; // Fallback to default background
-//     });
-// }
-
-function setCityImage(city) {
-    const unsplashURL = `https://api.unsplash.com/search/photos?query=${city}&client_id=` + unsplashApiKey;
-
-    fetch(unsplashURL)
-        .then(response => response.json())
-        .then(data => {
-            if (data.results.length > 0) {
-                const imageURL = data.results[0].urls.regular;
-                weatherDataElem.style.backgroundImage = `url(${imageURL})`;
-            } else {
-                weatherDataElem.style.backgroundImage = ''; // Fallback to default background
-            }
-        })
-        .catch(() => {
-            weatherDataElem.style.backgroundImage = ''; // Fallback to default background
-        });
 }
