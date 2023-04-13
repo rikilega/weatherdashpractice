@@ -94,6 +94,7 @@ header button[type="submit"]:hover {
 
 #weatherData {
   padding: 20px;
+  max-height: 400px;
 }
 
 .forecast-container {
@@ -125,12 +126,13 @@ header button[type="submit"]:hover {
 }
 
 .forecast-item {
+  line-height: 1.2;
   flex: 1 1 100px;
-/*   margin-top: 20px; */
-/*   margin-left: 20px; */
+  margin-left: 3px;
+ 
   text-align: center;
   background-color: rgba(18, 124, 174, 0.01);
-  padding: 20px;
+  padding: 0px;
   
   border-radius: 10px;
   box-shadow: 1px 5px 10px rgba(14, 12, 12, 0.1);
@@ -138,19 +140,19 @@ header button[type="submit"]:hover {
 }
 
 .forecast-item img {
-  margin-top: 10px;
+  margin: 0px;
   width: 60px;
   height: 60px;
 }
 
 .forecast-item div:nth-child(1) {
-  font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  
 }
 
 .forecast-item div:nth-child(2) {
   font-size: 24px;
-  margin-bottom: 3px;
+  
 }
 
 .forecast-item div:nth-child(3) {
@@ -167,6 +169,7 @@ header button[type="submit"]:hover {
 #weatherData {
 /* border: 1px solid #ccc; */
   padding: 10px;
+  max-height: 700px;
 } 
 
 .row {
