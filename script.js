@@ -88,8 +88,8 @@ function saveSearch() {
 };
 
 function seeWeather() {
-  const mainContentElem = document.getElementById('mainContent');
-  mainContentElem.scrollIntoView({ behavior: 'smooth' })
+  const forecastContainer = document.getElementById('forecast-container');
+  forecastContainer.scrollIntoView({ behavior: 'smooth' })
 }
 
 function getWeatherData(city) {
@@ -193,7 +193,7 @@ const currentWeatherHTML = `
 
     return `
         ${currentWeatherHTML}
-        <div class="forecast-container">
+        <div class="forecast-container" id="forecast-container">
         <h2 >5-Day Forecast for ${currentWeather.city}</h2>
         <div class="forecast">${forecastHTML}</div>
     `;
